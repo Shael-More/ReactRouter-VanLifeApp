@@ -9,7 +9,7 @@ const Header = () => {
   };
 
   return (
-    <header className='flex justify-between items-center py-8 px-6 bg-[#FFF7ED] mb-10'>
+    <header className='flex justify-between items-center py-8 px-6 bg-[#FFF7ED]'>
       <NavLink to='/' className='text-black font-bold text-2xl'>
         #VANLIFE
       </NavLink>
