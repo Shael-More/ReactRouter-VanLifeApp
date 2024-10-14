@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useLoaderData } from 'react-router-dom';
+import { getVans } from '../../api';
+export const loader = async () => {
+  return getVans();
+};
 
 const Vans = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [vans, setVans] = useState([]);
+  const [error, setError] = useState(null);
 
+  const vans = useLoaderData();
   const typeFilter = searchParams.get('type');
 
   const displayFilteredVans = typeFilter
     ? vans.filter((van) => van.type.toLowerCase() === typeFilter)
     : vans;
-  const fetchVans = async () => {
-    try {
-      const response = await fetch('/api/vans');
-      const data = await response.json();
 
-      setVans(data.vans);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  useEffect(() => {
-    fetchVans();
-  }, []);
-
+  if (error) {
+    return (
+      <h1 className='text-3xl font-bold text-center my-10'>
+        There was an error: {error.message}
+      </h1>
+    );
+  }
   return (
     <>
       <h1 className='text-3xl font-bold m-5'>Explore our van options</h1>
@@ -63,19 +62,22 @@ const Vans = () => {
           </button>
         ) : null}
       </nav>
-      <div className='grid grid-cols-2'>
+      <div className='grid sm:grid-cols-2 lg:grid-cols-3'>
         {displayFilteredVans &&
           displayFilteredVans.length > 0 &&
           displayFilteredVans.map((van) => (
-            <div key={van.id} className='m-5'>
+            <div key={van.id} className='m-5 w-[300px]'>
               <Link
                 to={van.id}
-                state={{ search: `?${searchParams.toString()}`, type: typeFilter }}
+                state={{
+                  search: `?${searchParams.toString()}`,
+                  type: typeFilter,
+                }}
               >
                 <img
                   src={van.imageUrl}
                   alt={van.name}
-                  className='h-[200px] w-full rounded-xl mb-3'
+                  className='h-[300px] w-full rounded-xl mb-3'
                 />
                 <div>
                   <h3 className='text-black text-2xl font-bold mb-1'>
