@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Link, NavLink, useParams, Outlet } from 'react-router-dom';
+import React from 'react';
+import { Link, NavLink, Outlet, useLoaderData } from 'react-router-dom';
+import { getHostVans } from '../../api';
+import { requireAuth } from '../../utils';
+
+export const loader = async ({ params }) => {
+  await requireAuth()
+  return getHostVans(params.id);
+};
 
 const HostVanDetail = () => {
-  const params = useParams();
-  const [currentVans, setCurrentVans] = useState([]);
-
-  const fetchHostVanDetails = async () => {
-    try {
-      const response = await fetch(`/api/host/vans/${params.id}`);
-      const data = await response.json();
-      setCurrentVans(data.vans);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    fetchHostVanDetails();
-  }, [params.id]);
-
+  const currentVans = useLoaderData();
   return (
     <section>
       <Link
@@ -64,7 +56,7 @@ const HostVanDetail = () => {
           Photos
         </NavLink>
       </nav>
-      <Outlet context={[currentVans]}/>
+      <Outlet context={[currentVans]} />
     </section>
   );
 };
