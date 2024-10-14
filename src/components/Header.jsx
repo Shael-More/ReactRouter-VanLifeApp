@@ -32,6 +32,12 @@ const Header = () => {
         >
           Vans
         </NavLink>
+        <NavLink
+          style={({isActive}) => isActive ? activeStyles : null}
+          to={'login'}
+        >
+          Login
+        </NavLink>
       </nav>
     </header>
   );
