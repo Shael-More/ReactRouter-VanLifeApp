@@ -1,8 +1,10 @@
 import { createServer, Model, Response } from 'miragejs';
+import { json } from 'react-router-dom';
 
 createServer({
   models: {
     vans: Model,
+    users: Model
   },
 
   seeds(server) {
@@ -66,6 +68,7 @@ createServer({
         'https://assets.scrimba.com/advanced-react/react-router/green-wonder.png',
       hostId: "123" , type: 'rugged',
     });
+    server.create('user', { id: "123", email: "a@a.in", password: "p123", name: "Bob"})
   },
 
   routes() {
@@ -91,6 +94,22 @@ createServer({
     this.get('/host/vans/:id', (schema, request) => {
       const id = request.params.id;
       return schema.vans.findBy({id, hostId: "123"})
+    })
+
+    this.post('/login', (schema, request) => {
+      const {email, password} = JSON.parse(request.requestBody)
+
+      const foundUser = schema.users.findBy({email, password})
+      if (!foundUser) {
+        return new Response(401, {}, { message: "No user with those credentials found"})
+      }
+
+      // At the very least, don't sent the password back to the client
+      foundUser.password = undefined
+      return {
+        user: foundUser,
+        token:"Enjoy your pizza, here's your tokens"
+      }
     })
 
   },
