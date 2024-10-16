@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+
 const Header = () => {
   const activeStyles = {
     fontWeight: 'bold',
@@ -8,6 +9,11 @@ const Header = () => {
     color: '#161616',
   };
 
+  const fakeLogOut = () => {
+    localStorage.removeItem('loggedin');
+    console.log('localStorage cleared')
+  }
+ 
   return (
     <header className='flex justify-between items-center py-8 px-6 bg-[#FFF7ED]'>
       <NavLink to='/' className='text-black font-bold text-2xl'>
@@ -38,6 +44,7 @@ const Header = () => {
         >
           Login
         </NavLink>
+        <button onClick={fakeLogOut} className='bg-gray-300 px-1'>X</button>
       </nav>
     </header>
   );
